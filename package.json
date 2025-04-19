@@ -10,7 +10,7 @@
     "page-loader-url-dir": "bin/page-loader.js -o /PageLoader/www https://ru.hexlet.io/courses",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest --coverage --coverageProvider=v8"
   },
   "keywords": [],
   "license": "ISC",
