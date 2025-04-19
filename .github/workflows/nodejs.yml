@@ -21,10 +21,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Code coverage
-        uses: paambaati/codeclimate-action@v5.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+      - uses: qltysh/qlty-action/coverage@main
         with:
-          coverageCommand: npm test -- --coverage --coverageProvider=v8
-          debug: true
+          coverage-token: {{secrets.QLTY_COVERAGE_TOKEN}}
+          files: coverage/lcov.info
