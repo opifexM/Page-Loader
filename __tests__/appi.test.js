@@ -14,8 +14,8 @@ import path from 'path';
 import { existsSync } from 'fs';
 import nock from 'nock';
 import { loadUrl } from '../src/api.js';
+import loadWebSite from '../src/app.js';
 import { saveFile } from '../src/file.js';
-import { loadWebSite } from '../src/app.js';
 
 describe('PageLoader functionality', () => {
   let tempDir;

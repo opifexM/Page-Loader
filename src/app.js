@@ -5,7 +5,7 @@ import { saveFile } from './file.js';
  * @param {string} urlPath
  * @param {string} dirPath
  */
-export function loadWebSite(urlPath, dirPath) {
+export default function loadWebSite(urlPath, dirPath) {
   console.log(dirPath);
   const formattedPath = dirPath ?? process.cwd();
   const formattedUrl =
