@@ -24,8 +24,9 @@ function isFileWritable(filePath) {
 /**
  * @param {string} filePath
  * @param {string} content
+ * @return {void}
  */
-export function saveFile(filePath, content) {
+export function saveTextFile(filePath, content) {
   if (isFileWritable(filePath)) {
     try {
       fs.writeFileSync(filePath, content, 'utf8');
@@ -33,5 +34,35 @@ export function saveFile(filePath, content) {
       console.error(`Error writing to a file '${filePath}': '${error}'`);
       throw error;
     }
+  }
+}
+
+/**
+ * @param {string} filePath
+ * @param {Blob} blob
+ * @return {void}
+ */
+export function saveBlobFile(filePath, blob) {
+  if (isFileWritable(filePath)) {
+    try {
+      const buffer = Buffer.from(blob);
+      fs.writeFileSync(filePath, buffer);
+    } catch (error) {
+      console.error(`Error writing to a blob file '${filePath}': '${error}'`);
+      throw error;
+    }
+  }
+}
+
+/**
+ * @param {string} path
+ * @return {void}
+ */
+export function createDirectory(path) {
+  try {
+    fs.mkdirSync(path, { recursive: true });
+  } catch (error) {
+    console.error(`Error create directory '${path}': '${error}'`);
+    throw error;
   }
 }

@@ -13,9 +13,9 @@ import os from 'os';
 import path from 'path';
 import { existsSync } from 'fs';
 import nock from 'nock';
-import { loadUrl } from '../src/api.js';
+import { loadHtmlUrl } from '../src/api.js';
 import loadWebSite from '../src/app.js';
-import { saveFile } from '../src/file.js';
+import { saveTextFile } from '../src/file.js';
 
 describe('PageLoader functionality', () => {
   let tempDir;
@@ -41,6 +41,7 @@ describe('PageLoader functionality', () => {
   test('successfully downloads and saves', async () => {
     const url = 'https://example.com';
     const content = '<html lang="en"><body>Example page</body></html>';
+    const contentUpdated = '<html lang="en"><head></head><body>Example page</body></html>';
 
     nock('https://example.com').get('/').reply(200, content);
 
@@ -50,7 +51,7 @@ describe('PageLoader functionality', () => {
     console.log(filePath);
     const fileContent = await fs.readFile(filePath, 'utf8');
 
-    expect(fileContent).toBe(content);
+    expect(fileContent).toBe(contentUpdated);
   });
 
   test('loadUrl throws an error on HTTP error', async () => {
@@ -61,7 +62,7 @@ describe('PageLoader functionality', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 
-    await expect(loadUrl(url)).rejects.toThrow();
+    await expect(loadHtmlUrl(url)).rejects.toThrow();
     expect(consoleSpy).toHaveBeenCalled();
 
     consoleSpy.mockRestore();
@@ -75,7 +76,7 @@ describe('PageLoader functionality', () => {
     const consoleSpy = jest
       .spyOn(console, 'error')
       .mockImplementation(() => {});
-    saveFile(filePath, content);
+    saveTextFile(filePath, content);
 
     expect(consoleSpy).toHaveBeenCalled();
     expect(existsSync(filePath)).toBe(false);

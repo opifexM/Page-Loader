@@ -6,8 +6,9 @@
   "scripts": {
     "page-loader": "bin/page-loader.js",
     "page-loader-help": "bin/page-loader.js -h",
-    "page-loader-url": "bin/page-loader.js https://ru.hexlet.io/courses",
-    "page-loader-url-dir": "bin/page-loader.js -o /PageLoader/www https://ru.hexlet.io/courses",
+    "page-loader-url": "bin/page-loader.js https://hexlet.io/courses",
+    "page-loader-url-dir": "bin/page-loader.js -o /Users/opifex/Documents/PageLoader/www https://ru.hexlet.io/courses",
+    "page-loader-url-dir": "bin/page-loader.js -o /Users/opifex/Documents/PageLoader/www https://example.com",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "jest --coverage --coverageProvider=v8"
@@ -19,16 +20,17 @@
     "page-loader": "bin/page-loader.js"
   },
   "devDependencies": {
-    "eslint": "^9.25.0",
+    "@jest/globals": "29.7.0",
+    "eslint": "^9.25.1",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-prettier": "^5.2.6",
     "jest": "^29.7.0",
-    "nock": "^14.0.3",
-    "prettier": "^3.5.3",
-    "@jest/globals": "29.7.0"
+    "nock": "^14.0.4",
+    "prettier": "^3.5.3"
   },
   "dependencies": {
     "axios": "^1.8.4",
+    "cheerio": "^1.0.0",
     "commander": "^13.1.0"
   }
 }
