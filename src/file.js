@@ -56,7 +56,7 @@ export function saveTextFile(filePath, content) {
     );
   }
   try {
-    fs.writeFileSync(filePath, `'\uFEFF'${content}`, 'utf8');
+    fs.writeFileSync(filePath, `\uFEFF${content}`, 'utf8');
     log(`Successfully saved text file at '${filePath}'.`);
   } catch (error) {
     log(`Error writing to file '${filePath}': ${error}`);
