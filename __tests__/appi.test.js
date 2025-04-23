@@ -111,6 +111,7 @@ describe('PageLoader functionality', () => {
     try {
       saveTextFile(filePath, content);
     } catch (error) {
+      // An error is expected
     }
 
     expect(consoleSpy).toHaveBeenCalled();

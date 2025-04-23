@@ -9,13 +9,18 @@ const log = debug('page-loader:parser');
 const FILE_IDENTIFIER = '_files';
 
 /**
+ * @param {string} filePath
+ * @return {string}
+ */
+function extractFileNameWithoutExtension(filePath) {
+  const parsed = path.parse(filePath);
+  return path.join(parsed.dir, parsed.name);
+}
+
+/**
  * @param {string} url
  * @return {string}
  */
-export function normalizeUrl(url) {
-  return url.replace(/^https?:\/+/, '').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '-');
-}
-
 function normalizeResourceUrl(url) {
   const fileNameWithoutExt = extractFileNameWithoutExtension(url);
   const normalizedName = normalizeUrl(fileNameWithoutExt);
@@ -27,12 +32,11 @@ function normalizeResourceUrl(url) {
 }
 
 /**
- * @param {string} filePath
+ * @param {string} url
  * @return {string}
  */
-function extractFileNameWithoutExtension(filePath) {
-  const parsed = path.parse(filePath);
-  return path.join(parsed.dir, parsed.name);
+export function normalizeUrl(url) {
+  return url.replace(/^https?:\/+/, '').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '-');
 }
 
 /**
@@ -41,7 +45,7 @@ function extractFileNameWithoutExtension(filePath) {
  */
 function isAbsoluteUrl(str) {
   try {
-    const _url = new URL(str);
+    new URL(str);
     return true;
   } catch (e) {
     return false;
