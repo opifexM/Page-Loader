@@ -56,7 +56,11 @@ export function saveTextFile(filePath, content) {
     );
   }
   try {
-    fs.writeFileSync(filePath, `\uFEFF${content}`, 'utf8');
+    let data = content;
+    if (path.extname(filePath) === '.css' && !content.startsWith('\uFEFF')) {
+      data = '\uFEFF' + content;
+    }
+    fs.writeFileSync(filePath, data, 'utf8');
     log(`Successfully saved text file at '${filePath}'.`);
   } catch (error) {
     log(`Error writing to file '${filePath}': ${error}`);
