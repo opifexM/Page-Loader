@@ -27,7 +27,7 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
   createDirectory(fullResourcePath);
   log(`Resource directory ensured at '${fullResourcePath}'.`);
 
-  const tasks = new Listr({
+  const tasks = new Listr([], {
     concurrent: false,
     rendererOptions: { collapse: false },
   });
@@ -72,22 +72,22 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
 
       tasks.add({
         title: loadUrl,
-        task: async () => {
+        task: () => {
           if (tag === 'link') {
             $(element).attr('href', newSrcPath);
-            loadTextUrl(loadUrl).then((textData) => {
+            return loadTextUrl(loadUrl).then((textData) => {
               log(`Downloaded text resource from '${loadUrl}'.`);
               saveTextFile(finalWorkPath, textData);
             });
           } else if (tag === 'script') {
             $(element).attr('src', newSrcPath);
-            loadTextUrl(loadUrl).then((textData) => {
+            return loadTextUrl(loadUrl).then((textData) => {
               log(`Downloaded script resource from '${loadUrl}'.`);
               saveTextFile(finalWorkPath, textData);
             });
           } else if (tag === 'img') {
             $(element).attr('src', newSrcPath);
-            loadBlobUrl(loadUrl).then((blobData) => {
+            return loadBlobUrl(loadUrl).then((blobData) => {
               log(`Downloaded image resource from '${loadUrl}'.`);
               saveBlobFile(finalWorkPath, blobData);
             });
@@ -97,9 +97,7 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
     }
   );
 
-  return tasks.run().then(() => {
-    return $.html();
-  });
+  return tasks.run().then(() => $.html());
 }
 
 /**
