@@ -130,6 +130,9 @@ export function normalizeUrl(url) {
  * @return {string}
  */
 function normalizeResourceUrl(url) {
+  if (!path.extname(url)) {
+    return `${normalizeUrl(extractFileNameWithoutExtension(url))}.html`;
+  }
   // console.log('== norm');
   // console.log(url);
   // console.log(normalizeUrl(url));
