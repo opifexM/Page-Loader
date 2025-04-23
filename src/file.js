@@ -36,7 +36,9 @@ export function saveTextFile(filePath, content) {
     console.error(
       `Error: Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
     );
-    process.exit(1);
+    throw new Error(
+      `Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
+    );
   }
   try {
     fs.writeFileSync(filePath, content, 'utf8');
@@ -45,7 +47,7 @@ export function saveTextFile(filePath, content) {
   } catch (error) {
     log(`Error writing to file '${filePath}': ${error}`);
     console.error(`Error writing text file '${filePath}': ${error.message}`);
-    process.exit(1);
+    throw error;
   }
 }
 
@@ -59,7 +61,9 @@ export function saveBlobFile(filePath, blob) {
     console.error(
       `Error: Unable to write blob file '${filePath}'. Check write permissions and ensure the directory exists.`
     );
-    process.exit(1);
+    throw new Error(
+      `Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
+    );
   }
   try {
     const buffer = Buffer.from(blob);
@@ -69,7 +73,7 @@ export function saveBlobFile(filePath, blob) {
   } catch (error) {
     log(`Error writing to blob file '${filePath}': ${error}`);
     console.error(`Error writing blob file '${filePath}': ${error.message}`);
-    process.exit(1);
+    throw error;
   }
 }
 
@@ -84,6 +88,6 @@ export function createDirectory(dirPath) {
   } catch (error) {
     log(`Error creating directory '${dirPath}': ${error}`);
     console.error(`Error creating directory '${dirPath}': ${error.message}`);
-    process.exit(1);
+    throw error;
   }
 }
