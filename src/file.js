@@ -46,6 +46,7 @@ function isFileWritable(filePath) {
  * @return {void}
  */
 export function saveTextFile(filePath, content) {
+  console.log(filePath);
   if (!content || !isFileWritable(filePath)) {
     console.error(
       `Error: Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`

@@ -1,13 +1,13 @@
 import * as cheerio from 'cheerio';
 import debug from 'debug';
 import { Listr } from 'listr2';
+import path from 'path';
 import { loadBlobUrl, loadTextUrl } from './api.js';
 import { createDirectory, saveBlobFile, saveTextFile } from './file.js';
 
 const log = debug('page-loader:parser');
 
 const FILE_IDENTIFIER = `_files`;
-const MIN_URL_PARTS_COUNT = 2;
 
 /**
  * @param {string} htmlCode
@@ -114,23 +114,21 @@ export function normalizeUrl(url) {
  * @return {string}
  */
 function normalizeResourceUrl(url) {
-  const fileName = url.split('/').pop();
-  const fileNameParts = fileName.split('.');
-
-  const hasValidExtension = fileNameParts.length >= MIN_URL_PARTS_COUNT;
-  if (!hasValidExtension) {
-    return `${normalizeUrl(url)}.html`;
-  }
-
-  const fileExtension = fileNameParts.pop();
-  const nameWithoutExtension = fileNameParts.join('.');
-
-  return `${normalizeUrl(nameWithoutExtension)}.${fileExtension}`;
+  return `${normalizeUrl(extractFileNameWithoutExtension(url))}${path.extname(url)}`;
 }
 
 /**
- * @param {string} str - The string to be evaluated to determine if it is an absolute URL.
- * @return {boolean} Returns true if the string is an absolute URL, false otherwise.
+ * @param {string} filePath
+ * @return {string}
+ */
+function extractFileNameWithoutExtension(filePath) {
+  const parsed = path.parse(filePath);
+  return path.join(parsed.dir, parsed.name);
+}
+
+/**
+ * @param {string} str
+ * @return {boolean}
  */
 function isAbsoluteUrl(str) {
   try {

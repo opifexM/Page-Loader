@@ -9,6 +9,7 @@
     "page-loader-url": "bin/page-loader.js https://hexlet.io/courses",
     "page-loader-url-dir": "bin/page-loader.js -o /Users/opifex/Documents/PageLoader/www https://ru.hexlet.io/courses",
     "page-loader-url-dir2": "bin/page-loader.js -o /Users/opifex/Documents/PageLoader/www https://example.com",
+    "page-loader-url-dir3": "bin/page-loader.js -o /Users/opifex/Documents/PageLoader/www https://site.com/blog/about",
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "jest --coverage --coverageProvider=v8"
