@@ -19,15 +19,17 @@ export default function loadWebSite(inputUrl, inputPath) {
   const normalizedPath =
     websiteUrl.pathname === '/' ? '' : normalizeUrl(websiteUrl.pathname);
 
-  if (!isFileWritable(workPath)) {
-    const error = new Error(
-      `ENOENT: no such file or directory, access '${workPath}'`
-    );
-    error.code = 'ENOENT';
-    throw error;
-  }
-
   return Promise.resolve()
+    .then(() => {
+      log(`Checking directory: '${workPath}'...`);
+      if (!isFileWritable(workPath)) {
+        const error = new Error(
+          `ENOENT: no such file or directory, access '${workPath}'`
+        );
+        error.code = 'ENOENT';
+        return Promise.reject(error);
+      }
+    })
     .then(() => {
       log(`Loading URL: '${websiteUrl}'...`);
       return loadTextUrl(websiteUrl.toString());
