@@ -56,9 +56,8 @@ export function saveTextFile(filePath, content) {
     );
   }
   try {
-    fs.writeFileSync(filePath, content, 'utf8');
+    fs.writeFileSync(filePath, `'\uFEFF'${content}`, 'utf8');
     log(`Successfully saved text file at '${filePath}'.`);
-    console.log(`\x1b[32m✓ ${filePath}`);
   } catch (error) {
     log(`Error writing to file '${filePath}': ${error}`);
     console.error(`Error writing text file '${filePath}': ${error.message}`);
@@ -84,7 +83,6 @@ export function saveBlobFile(filePath, blob) {
     const buffer = Buffer.from(blob);
     fs.writeFileSync(filePath, buffer);
     log(`Successfully saved blob file at '${filePath}'.`);
-    console.log(`\x1b[32m✓ ${filePath}`);
   } catch (error) {
     log(`Error writing to blob file '${filePath}': ${error}`);
     console.error(`Error writing blob file '${filePath}': ${error.message}`);
