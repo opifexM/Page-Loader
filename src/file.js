@@ -8,7 +8,7 @@ const log = debug('page-loader:file');
  * @param {string} filePath
  * @return {boolean}
  */
-function isFileWritable(filePath) {
+export function isFileWritable(filePath) {
   const dir = path.dirname(filePath);
 
   try {

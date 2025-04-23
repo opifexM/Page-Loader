@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { loadTextUrl } from './api.js';
-import { saveTextFile } from './file.js';
-import { normalizeUrl, parseHtml } from './parser.js';
-import debug from 'debug';
 import axiosDebugLog from 'axios-debug-log';
+import debug from 'debug';
+import {loadTextUrl} from './api.js';
+import {isFileWritable, saveTextFile} from './file.js';
+import {normalizeUrl, parseHtml} from './parser.js';
 
 axiosDebugLog(axios);
 const log = debug('page-loader');
@@ -18,6 +18,10 @@ export default function loadWebSite(inputUrl, inputPath) {
   const normalizedHost = normalizeUrl(websiteUrl.hostname);
   const normalizedPath =
     websiteUrl.pathname === '/' ? '' : normalizeUrl(websiteUrl.pathname);
+
+  if (!isFileWritable(workPath)) {
+    throw new Error(`ENOENT: no such file or directory, access '${workPath}'`);
+  }
 
   return Promise.resolve()
     .then(() => {
