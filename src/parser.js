@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
-import {loadBlobUrl, loadTextUrl} from './api.js';
-import {createDirectory, saveBlobFile, saveTextFile} from './file.js';
+import { loadBlobUrl, loadTextUrl } from './api.js';
+import { createDirectory, saveBlobFile, saveTextFile } from './file.js';
 
 const FILE_IDENTIFIER = `_files`;
 const MIN_URL_PARTS_COUNT = 2;
@@ -35,7 +35,6 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
       } else if (tag === 'img') {
         srcPath = $(element).attr('src');
       }
-      console.log(`- srcPath : ${srcPath}`);
 
       if (!srcPath) {
         return;
@@ -52,11 +51,7 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
       const newSrcPath = `${resourceFilePath}/${normalizedHost}${normalizeResourceUrl(srcPath)}`;
 
       const finalWorkPath = `${workPath}/${newSrcPath}`;
-      console.log(`newSrcPath: ${newSrcPath}`);
-      console.log(`loadUrl: ${loadUrl}`);
-      console.log(`finalWorkPath: ${finalWorkPath}`);
 
-      // return;
       if (tag === 'link') {
         $(element).attr('href', newSrcPath);
         loadTextUrl(loadUrl).then((textData) =>
@@ -96,7 +91,7 @@ function normalizeResourceUrl(url) {
   const fileNameParts = fileName.split('.');
 
   const hasValidExtension = fileNameParts.length >= MIN_URL_PARTS_COUNT;
-    if (!hasValidExtension) {
+  if (!hasValidExtension) {
     return `${normalizeUrl(url)}.html`;
   }
 
