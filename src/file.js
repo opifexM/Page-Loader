@@ -32,17 +32,20 @@ function isFileWritable(filePath) {
  * @return {void}
  */
 export function saveTextFile(filePath, content) {
-  if (content && isFileWritable(filePath)) {
-    try {
-      fs.writeFileSync(filePath, content, 'utf8');
-      log(`Successfully saved text file at '${filePath}'.`);
-      console.log(`\x1b[32m✓ ${filePath}`);
-    } catch (error) {
-      log(`Error writing to file '${filePath}': ${error}`);
-      throw error;
-    }
-  } else {
-    log(`Content is empty or file '${filePath}' is not writable.`);
+  if (!content || !isFileWritable(filePath)) {
+    console.error(
+      `Error: Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
+    );
+    process.exit(1);
+  }
+  try {
+    fs.writeFileSync(filePath, content, 'utf8');
+    log(`Successfully saved text file at '${filePath}'.`);
+    console.log(`\x1b[32m✓ ${filePath}`);
+  } catch (error) {
+    log(`Error writing to file '${filePath}': ${error}`);
+    console.error(`Error writing text file '${filePath}': ${error.message}`);
+    process.exit(1);
   }
 }
 
@@ -52,18 +55,21 @@ export function saveTextFile(filePath, content) {
  * @return {void}
  */
 export function saveBlobFile(filePath, blob) {
-  if (blob && isFileWritable(filePath)) {
-    try {
-      const buffer = Buffer.from(blob);
-      fs.writeFileSync(filePath, buffer);
-      log(`Successfully saved blob file at '${filePath}'.`);
-      console.log(`\x1b[32m✓ ${filePath}`);
-    } catch (error) {
-      log(`Error writing to blob file '${filePath}': ${error}`);
-      throw error;
-    }
-  } else {
-    log(`Blob is empty or file '${filePath}' is not writable.`);
+  if (!blob || !isFileWritable(filePath)) {
+    console.error(
+      `Error: Unable to write blob file '${filePath}'. Check write permissions and ensure the directory exists.`
+    );
+    process.exit(1);
+  }
+  try {
+    const buffer = Buffer.from(blob);
+    fs.writeFileSync(filePath, buffer);
+    log(`Successfully saved blob file at '${filePath}'.`);
+    console.log(`\x1b[32m✓ ${filePath}`);
+  } catch (error) {
+    log(`Error writing to blob file '${filePath}': ${error}`);
+    console.error(`Error writing blob file '${filePath}': ${error.message}`);
+    process.exit(1);
   }
 }
 
@@ -77,6 +83,7 @@ export function createDirectory(dirPath) {
     log(`Directory '${dirPath}' created or already exists.`);
   } catch (error) {
     log(`Error creating directory '${dirPath}': ${error}`);
-    throw error;
+    console.error(`Error creating directory '${dirPath}': ${error.message}`);
+    process.exit(1);
   }
 }

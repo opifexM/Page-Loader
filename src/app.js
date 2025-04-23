@@ -44,5 +44,6 @@ export default function loadWebSite(inputUrl, inputPath) {
     })
     .catch((error) => {
       log(`Error during program execution: ${error}`);
+      process.exit(1);
     });
 }

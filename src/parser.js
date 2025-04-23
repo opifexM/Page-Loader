@@ -1,7 +1,8 @@
 import * as cheerio from 'cheerio';
+import debug from 'debug';
+import { Listr } from 'listr2';
 import { loadBlobUrl, loadTextUrl } from './api.js';
 import { createDirectory, saveBlobFile, saveTextFile } from './file.js';
-import debug from 'debug';
 
 const log = debug('page-loader:parser');
 
@@ -12,7 +13,7 @@ const MIN_URL_PARTS_COUNT = 2;
  * @param {string} htmlCode
  * @param {URL} websiteUrl
  * @param {string} workPath
- * @return {string}
+ * @return {Promise<string>}
  */
 export function parseHtml(htmlCode, websiteUrl, workPath) {
   const websiteHost = websiteUrl.hostname;
@@ -26,6 +27,10 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
   createDirectory(fullResourcePath);
   log(`Resource directory ensured at '${fullResourcePath}'.`);
 
+  const tasks = new Listr({
+    concurrent: false,
+    rendererOptions: { collapse: false },
+  });
   const $ = cheerio.load(htmlCode);
   $('img[src$=".png"], img[src$=".jpg"], script[src], link[href]').each(
     (i, element) => {
@@ -53,40 +58,48 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         loadUrl = `${websiteProtocol}//${websiteHost}${srcPath}`;
       }
       if (srcPathUrl && srcPathUrl.hostname !== websiteHost) {
-        log(`Skipping element with external hostname: '${srcPathUrl.hostname}'.`);
+        log(
+          `Skipping element with external hostname: '${srcPathUrl.hostname}'.`
+        );
         return;
       }
       const newSrcPath = `${resourceFilePath}/${normalizedHost}${normalizeResourceUrl(srcPath)}`;
       const finalWorkPath = `${workPath}/${newSrcPath}`;
 
-      log(`Processing <${tag}> resource. Original URL: '${loadUrl}', New path: '${newSrcPath}'.`);
+      log(
+        `Processing <${tag}> resource. Original URL: '${loadUrl}', New path: '${newSrcPath}'.`
+      );
 
-      if (tag === 'link') {
-        $(element).attr('href', newSrcPath);
-        loadTextUrl(loadUrl)
-          .then((textData) => {
-            log(`Downloaded text resource from '${loadUrl}'.`);
-            saveTextFile(finalWorkPath, textData);
-          });
-      } else if (tag === 'script') {
-        $(element).attr('src', newSrcPath);
-        loadTextUrl(loadUrl)
-          .then((textData) => {
-            log(`Downloaded script resource from '${loadUrl}'.`);
-            saveTextFile(finalWorkPath, textData);
-          });
-      } else if (tag === 'img') {
-        $(element).attr('src', newSrcPath);
-        loadBlobUrl(loadUrl)
-          .then((blobData) => {
-            log(`Downloaded image resource from '${loadUrl}'.`);
-            saveBlobFile(finalWorkPath, blobData);
-          });
-      }
+      tasks.add({
+        title: loadUrl,
+        task: async () => {
+          if (tag === 'link') {
+            $(element).attr('href', newSrcPath);
+            loadTextUrl(loadUrl).then((textData) => {
+              log(`Downloaded text resource from '${loadUrl}'.`);
+              saveTextFile(finalWorkPath, textData);
+            });
+          } else if (tag === 'script') {
+            $(element).attr('src', newSrcPath);
+            loadTextUrl(loadUrl).then((textData) => {
+              log(`Downloaded script resource from '${loadUrl}'.`);
+              saveTextFile(finalWorkPath, textData);
+            });
+          } else if (tag === 'img') {
+            $(element).attr('src', newSrcPath);
+            loadBlobUrl(loadUrl).then((blobData) => {
+              log(`Downloaded image resource from '${loadUrl}'.`);
+              saveBlobFile(finalWorkPath, blobData);
+            });
+          }
+        },
+      });
     }
   );
 
-  return $.html();
+  return tasks.run().then(() => {
+    return $.html();
+  });
 }
 
 /**
