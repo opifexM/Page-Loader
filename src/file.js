@@ -11,7 +11,7 @@ export function checkDirectory(directoryPath) {
   log(`Check directory: '${directoryPath}'...`);
   if (!fs.existsSync(directoryPath)) {
     const error = new Error(
-      `ENOENT: no such file or directory, access '${directoryPath}'`
+      `ENOENT: no such file or directory, access '${directoryPath}'`,
     );
     error.code = 'ENOENT';
     throw error;
@@ -35,7 +35,9 @@ function isFileWritable(filePath) {
     }
     return true;
   } catch (error) {
-    log(`Error checking write access for file '${filePath}': ${error}`);
+    log(
+      `Error checking write access for file '${filePath}': ${error}`,
+    );
     return false;
   }
 }
@@ -49,16 +51,16 @@ export function saveTextFile(filePath, content) {
   console.log(filePath);
   if (!content || !isFileWritable(filePath)) {
     console.error(
-      `Error: Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
+      `Error: Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`,
     );
     throw new Error(
-      `Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
+      `Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`,
     );
   }
   try {
     let data = content;
     if (path.extname(filePath) === '.css' && !content.startsWith('\uFEFF')) {
-      data = '\uFEFF' + content;
+      data = `\uFEFF${content}`;
     }
     fs.writeFileSync(filePath, data, 'utf8');
     log(`Successfully saved text file at '${filePath}'.`);
@@ -77,10 +79,10 @@ export function saveTextFile(filePath, content) {
 export function saveBlobFile(filePath, blob) {
   if (!blob || !isFileWritable(filePath)) {
     console.error(
-      `Error: Unable to write blob file '${filePath}'. Check write permissions and ensure the directory exists.`
+      `Error: Unable to write blob file '${filePath}'. Check write permissions and ensure the directory exists.`,
     );
     throw new Error(
-      `Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`
+      `Unable to write file '${filePath}'. Check write permissions and ensure the directory exists.`,
     );
   }
   try {

@@ -10,7 +10,7 @@ export function loadTextUrl(url) {
     .then((response) => {
       if (response.status !== 200) {
         console.error(
-          `Error: Resource '${url}' returned status ${response.status}`
+          `Error: Resource '${url}' returned status ${response.status}`,
         );
         throw new Error(`HTTP ${response.status} for ${url}`);
       }
@@ -19,15 +19,15 @@ export function loadTextUrl(url) {
     .catch((error) => {
       if (error.response) {
         console.error(
-          `Error downloading HTML from url '${url}': HTTP ${error.response.status}`
+          `Error downloading HTML from url '${url}': HTTP ${error.response.status}`,
         );
       } else if (error.request) {
         console.error(
-          `Error downloading HTML from url '${url}': No response received`
+          `Error downloading HTML from url '${url}': No response received`,
         );
       } else {
         console.error(
-          `Error downloading HTML from url '${url}': ${error.message}`
+          `Error downloading HTML from url '${url}': ${error.message}`,
         );
       }
       throw error;
@@ -42,13 +42,13 @@ export function loadBlobUrl(url) {
   return axios
     .request({
       method: 'GET',
-      url: url,
+      url,
       responseType: 'arraybuffer',
     })
     .then((response) => {
       if (response.status !== 200) {
         console.error(
-          `Error: Resource '${url}' returned status ${response.status}`
+          `Error: Resource '${url}' returned status ${response.status}`,
         );
         throw new Error(`HTTP ${response.status} for ${url}`);
       }
@@ -57,15 +57,15 @@ export function loadBlobUrl(url) {
     .catch((error) => {
       if (error.response) {
         console.error(
-          `Error downloading Blob from url '${url}': HTTP ${error.response.status}`
+          `Error downloading Blob from url '${url}': HTTP ${error.response.status}`,
         );
       } else if (error.request) {
         console.error(
-          `Error downloading Blob from url '${url}': No response received`
+          `Error downloading Blob from url '${url}': No response received`,
         );
       } else {
         console.error(
-          `Error downloading Blob from url '${url}': ${error.message}`
+          `Error downloading Blob from url '${url}': ${error.message}`,
         );
       }
       throw error;

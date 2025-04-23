@@ -1,3 +1,10 @@
+import fs from 'fs/promises';
+import { existsSync } from 'fs';
+import os from 'os';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import nock from 'nock';
 import {
   afterAll,
   afterEach,
@@ -8,15 +15,10 @@ import {
   jest,
   test,
 } from '@jest/globals';
-import { existsSync } from 'fs';
-import fs from 'fs/promises';
-import nock from 'nock';
-import os from 'os';
-import path from 'path';
+
 import { loadTextUrl } from '../src/api.js';
 import loadWebSite from '../src/app.js';
 import { saveTextFile } from '../src/file.js';
-import { fileURLToPath } from 'url';
 
 describe('PageLoader functionality', () => {
   let tempDir;
@@ -36,33 +38,38 @@ describe('PageLoader functionality', () => {
   });
 
   afterEach(async () => {
-    await fs.rm(tempDir, {recursive: true, force: true});
+    await fs.rm(tempDir, {
+      recursive: true,
+      force: true,
+    });
   });
 
   test('successfully downloads and saves', async () => {
     const fixturesPath = path.resolve(
       path.dirname(fileURLToPath(import.meta.url)),
       '..',
-      '__fixtures__'
+      '__fixtures__',
     );
     const url = 'https://example.com';
     const content = await fs.readFile(
       path.join(fixturesPath, 'example.html'),
-      'utf8'
+      'utf8',
     );
     const expectedContent = await fs.readFile(
       path.join(fixturesPath, 'example-com.html'),
-      'utf8'
+      'utf8',
     );
     const cssContent = await fs.readFile(
       path.join(fixturesPath, 'application.css'),
-      'utf8'
+      'utf8',
     );
     const htmlContent = await fs.readFile(
       path.join(fixturesPath, 'courses.html'),
-      'utf8'
+      'utf8',
     );
-    const pngContent = await fs.readFile(path.join(fixturesPath, 'nodejs.png'));
+    const pngContent = await fs.readFile(
+      path.join(fixturesPath, 'nodejs.png'),
+    );
 
     nock('https://example.com').get('/').reply(200, content);
     nock('https://example.com')
@@ -100,10 +107,11 @@ describe('PageLoader functionality', () => {
     const filePath = path.join(nonExistentDir, 'test.html');
     const content = '<html lang="en"><body>Test content</body></html>';
 
-    const consoleSpy = jest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-    saveTextFile(filePath, content);
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    try {
+      saveTextFile(filePath, content);
+    } catch (error) {
+    }
 
     expect(consoleSpy).toHaveBeenCalled();
     expect(existsSync(filePath)).toBe(false);
