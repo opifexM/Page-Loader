@@ -5,10 +5,24 @@ import debug from 'debug';
 const log = debug('page-loader:file');
 
 /**
+ * @param {string | Buffer<ArrayBufferLike> | URL} directoryPath
+ */
+export function checkDirectory(directoryPath) {
+  log(`Check directory: '${directoryPath}'...`);
+  if (!fs.existsSync(directoryPath)) {
+    const error = new Error(
+      `ENOENT: no such file or directory, access '${directoryPath}'`
+    );
+    error.code = 'ENOENT';
+    throw error;
+  }
+}
+
+/**
  * @param {string} filePath
  * @return {boolean}
  */
-export function isFileWritable(filePath) {
+function isFileWritable(filePath) {
   const dir = path.dirname(filePath);
 
   try {

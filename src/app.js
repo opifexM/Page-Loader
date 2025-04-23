@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosDebugLog from 'axios-debug-log';
 import debug from 'debug';
 import { loadTextUrl } from './api.js';
-import { isFileWritable, saveTextFile } from './file.js';
+import { checkDirectory, saveTextFile } from './file.js';
 import { normalizeUrl, parseHtml } from './parser.js';
 
 axiosDebugLog(axios);
@@ -21,14 +21,7 @@ export default function loadWebSite(inputUrl, inputPath) {
 
   return Promise.resolve()
     .then(() => {
-      log(`Checking directory: '${workPath}'...`);
-      if (!isFileWritable(workPath)) {
-        const error = new Error(
-          `ENOENT: no such file or directory, access '${workPath}'`
-        );
-        error.code = 'ENOENT';
-        return Promise.reject(error);
-      }
+      checkDirectory(workPath);
     })
     .then(() => {
       log(`Loading URL: '${websiteUrl}'...`);
