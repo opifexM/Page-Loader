@@ -1,9 +1,9 @@
 import * as cheerio from 'cheerio';
 import debug from 'debug';
-import {Listr} from 'listr2';
+import { Listr } from 'listr2';
 import path from 'path';
-import {loadBlobUrl, loadTextUrl} from './api.js';
-import {createDirectory, saveBlobFile, saveTextFile} from './file.js';
+import { loadBlobUrl, loadTextUrl } from './api.js';
+import { createDirectory, saveBlobFile, saveTextFile } from './file.js';
 
 const log = debug('page-loader:parser');
 
@@ -26,14 +26,11 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
 
   createDirectory(fullResourcePath);
   log(`Resource directory ensured at '${fullResourcePath}'.`);
-  // console.log(resourceFilePath);
-  // console.log(normalizedHost);
-  // console.log(workPath);
 
   const tasks = new Listr([], {
     concurrent: false,
     exitOnError: true,
-    rendererOptions: {collapse: false},
+    rendererOptions: { collapse: false },
   });
   const $ = cheerio.load(htmlCode);
   $('img[src$=".png"], img[src$=".jpg"], script[src], link[href]').each(
@@ -52,7 +49,6 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         srcPath = $(element).attr('src');
       }
 
-      // console.log('--');
       if (!srcPath) {
         log(`Skipping element as no source path found.`);
         return;
@@ -65,28 +61,17 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         loadUrl = `${websiteProtocol}//${websiteHost}${srcPath}`;
         newSrcPath = `${resourceFilePath}/${normalizedHost}${normalizeResourceUrl(srcPath)}`;
       }
-      // console.log(srcPath);
-      // console.log(websiteHost);
       if (srcPathUrl && srcPathUrl.hostname !== websiteHost) {
         log(
           `Skipping element with external hostname: '${srcPathUrl.hostname}'.`
         );
         return;
       }
-      // const newSrcPath = `${resourceFilePath}/${normalizedHost}${normalizeResourceUrl(srcPath)}`;
       const finalWorkPath = `${workPath}/${newSrcPath}`;
-
-
-      // console.log(`newSrcPath: ${newSrcPath}`);
-      // console.log(`finalWorkPath: ${finalWorkPath}`);
-      // console.log(`srcPath: ${srcPath}, websiteHost: ${websiteHost}`);
-      // console.log(`resourceFilePath: ${resourceFilePath}, normalizedHost: ${normalizedHost}, workPath: ${workPath}`);
-
       log(
         `Processing <${tag}> resource. Original URL: '${loadUrl}', New path: '${newSrcPath}'.`
       );
 
-      // return;
       tasks.add({
         title: loadUrl,
         task: () => {
@@ -125,22 +110,14 @@ export function normalizeUrl(url) {
   return url.replace(/^https?:\/+/, '').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '-');
 }
 
-/**
- * @param {string} url
- * @return {string}
- */
 function normalizeResourceUrl(url) {
-  if (!path.extname(url)) {
-    return `${normalizeUrl(extractFileNameWithoutExtension(url))}.html`;
-  }
-  // console.log('== norm');
-  // console.log(url);
-  // console.log(normalizeUrl(url));
-  // console.log(extractFileNameWithoutExtension(url));
-  // console.log(`norm: ${normalizeUrl(extractFileNameWithoutExtension(url))}${path.extname(url)}`);
+  const fileNameWithoutExt = extractFileNameWithoutExtension(url);
+  const normalizedName = normalizeUrl(fileNameWithoutExt);
+  const fileExtension = path.extname(url);
 
-
-  return `${normalizeUrl(extractFileNameWithoutExtension(url))}${path.extname(url)}`;
+  return fileExtension
+    ? `${normalizedName}${fileExtension}`
+    : `${normalizedName}.html`;
 }
 
 /**
@@ -149,9 +126,6 @@ function normalizeResourceUrl(url) {
  */
 function extractFileNameWithoutExtension(filePath) {
   const parsed = path.parse(filePath);
-  // console.log('== parsed');
-  // console.log(path.join(parsed.dir, parsed.name));
-  // console.log('===');
   return path.join(parsed.dir, parsed.name);
 }
 
