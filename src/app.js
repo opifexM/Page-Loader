@@ -1,6 +1,12 @@
+import axios from 'axios';
 import { loadTextUrl } from './api.js';
 import { saveTextFile } from './file.js';
 import { normalizeUrl, parseHtml } from './parser.js';
+import debug from 'debug';
+import axiosDebugLog from 'axios-debug-log';
+
+axiosDebugLog(axios);
+const log = debug('page-loader');
 
 /**
  * @param {string} inputUrl
@@ -15,24 +21,28 @@ export default function loadWebSite(inputUrl, inputPath) {
 
   return Promise.resolve()
     .then(() => {
-      console.log(`Loading url: '${websiteUrl}'...`);
+      log(`Loading URL: '${websiteUrl}'...`);
       return loadTextUrl(websiteUrl.toString());
     })
     .then((textData) => {
-      console.log(`Parsing url: '${websiteUrl}'...`);
+      log(`Parsing URL: '${websiteUrl}'...`);
       return parseHtml(textData, websiteUrl, workPath);
     })
     .then((updatedHtmlContent) => {
-      console.log(
+      log(
         `Saving file: '${workPath}/${normalizedHost}${normalizedPath}.html'...`
       );
       saveTextFile(
         `${workPath}/${normalizedHost}${normalizedPath}.html`,
         updatedHtmlContent
       );
+      console.log(
+        `Page was successfully downloaded into '${workPath}/${normalizedHost}${normalizedPath}.html'`
+      );
+
       return updatedHtmlContent;
     })
     .catch((error) => {
-      console.log(`Error program execution: ${error}`);
+      log(`Error during program execution: ${error}`);
     });
 }

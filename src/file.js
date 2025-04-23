@@ -1,5 +1,8 @@
 import fs from 'fs';
 import * as path from 'node:path';
+import debug from 'debug';
+
+const log = debug('page-loader:file');
 
 /**
  * @param {string} filePath
@@ -11,12 +14,14 @@ function isFileWritable(filePath) {
   try {
     if (fs.existsSync(filePath)) {
       fs.accessSync(filePath, fs.constants.W_OK);
+      log(`File '${filePath}' exists and is writable.`);
     } else {
       fs.accessSync(dir, fs.constants.W_OK);
+      log(`Directory '${dir}' is writable. File '${filePath}' may be created.`);
     }
     return true;
   } catch (error) {
-    console.error(`Error writing access to a file '${filePath}': '${error}'`);
+    log(`Error checking write access for file '${filePath}': ${error}`);
     return false;
   }
 }
@@ -30,10 +35,14 @@ export function saveTextFile(filePath, content) {
   if (content && isFileWritable(filePath)) {
     try {
       fs.writeFileSync(filePath, content, 'utf8');
+      log(`Successfully saved text file at '${filePath}'.`);
+      console.log(`\x1b[32m✓ ${filePath}`);
     } catch (error) {
-      console.error(`Error writing to a file '${filePath}': '${error}'`);
+      log(`Error writing to file '${filePath}': ${error}`);
       throw error;
     }
+  } else {
+    log(`Content is empty or file '${filePath}' is not writable.`);
   }
 }
 
@@ -47,22 +56,27 @@ export function saveBlobFile(filePath, blob) {
     try {
       const buffer = Buffer.from(blob);
       fs.writeFileSync(filePath, buffer);
+      log(`Successfully saved blob file at '${filePath}'.`);
+      console.log(`\x1b[32m✓ ${filePath}`);
     } catch (error) {
-      console.error(`Error writing to a blob file '${filePath}': '${error}'`);
+      log(`Error writing to blob file '${filePath}': ${error}`);
       throw error;
     }
+  } else {
+    log(`Blob is empty or file '${filePath}' is not writable.`);
   }
 }
 
 /**
- * @param {string} path
+ * @param {string} dirPath
  * @return {void}
  */
-export function createDirectory(path) {
+export function createDirectory(dirPath) {
   try {
-    fs.mkdirSync(path, { recursive: true });
+    fs.mkdirSync(dirPath, { recursive: true });
+    log(`Directory '${dirPath}' created or already exists.`);
   } catch (error) {
-    console.error(`Error create directory '${path}': '${error}'`);
+    log(`Error creating directory '${dirPath}': ${error}`);
     throw error;
   }
 }

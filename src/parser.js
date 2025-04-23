@@ -1,6 +1,9 @@
 import * as cheerio from 'cheerio';
 import { loadBlobUrl, loadTextUrl } from './api.js';
 import { createDirectory, saveBlobFile, saveTextFile } from './file.js';
+import debug from 'debug';
+
+const log = debug('page-loader:parser');
 
 const FILE_IDENTIFIER = `_files`;
 const MIN_URL_PARTS_COUNT = 2;
@@ -18,7 +21,10 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
   const normalizedPath =
     websiteUrl.pathname === '/' ? '' : normalizeUrl(websiteUrl.pathname);
   const resourceFilePath = `${normalizedHost}${normalizedPath}${FILE_IDENTIFIER}`;
-  createDirectory(`${workPath}/${resourceFilePath}`);
+  const fullResourcePath = `${workPath}/${resourceFilePath}`;
+
+  createDirectory(fullResourcePath);
+  log(`Resource directory ensured at '${fullResourcePath}'.`);
 
   const $ = cheerio.load(htmlCode);
   $('img[src$=".png"], img[src$=".jpg"], script[src], link[href]').each(
@@ -37,6 +43,7 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
       }
 
       if (!srcPath) {
+        log(`Skipping element as no source path found.`);
         return;
       }
       if (isAbsoluteUrl(srcPath)) {
@@ -46,27 +53,35 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         loadUrl = `${websiteProtocol}//${websiteHost}${srcPath}`;
       }
       if (srcPathUrl && srcPathUrl.hostname !== websiteHost) {
+        log(`Skipping element with external hostname: '${srcPathUrl.hostname}'.`);
         return;
       }
       const newSrcPath = `${resourceFilePath}/${normalizedHost}${normalizeResourceUrl(srcPath)}`;
-
       const finalWorkPath = `${workPath}/${newSrcPath}`;
+
+      log(`Processing <${tag}> resource. Original URL: '${loadUrl}', New path: '${newSrcPath}'.`);
 
       if (tag === 'link') {
         $(element).attr('href', newSrcPath);
-        loadTextUrl(loadUrl).then((textData) =>
-          saveTextFile(finalWorkPath, textData)
-        );
+        loadTextUrl(loadUrl)
+          .then((textData) => {
+            log(`Downloaded text resource from '${loadUrl}'.`);
+            saveTextFile(finalWorkPath, textData);
+          });
       } else if (tag === 'script') {
         $(element).attr('src', newSrcPath);
-        loadTextUrl(loadUrl).then((textData) =>
-          saveTextFile(finalWorkPath, textData)
-        );
+        loadTextUrl(loadUrl)
+          .then((textData) => {
+            log(`Downloaded script resource from '${loadUrl}'.`);
+            saveTextFile(finalWorkPath, textData);
+          });
       } else if (tag === 'img') {
         $(element).attr('src', newSrcPath);
-        loadBlobUrl(loadUrl).then((blobData) =>
-          saveBlobFile(finalWorkPath, blobData)
-        );
+        loadBlobUrl(loadUrl)
+          .then((blobData) => {
+            log(`Downloaded image resource from '${loadUrl}'.`);
+            saveBlobFile(finalWorkPath, blobData);
+          });
       }
     }
   );

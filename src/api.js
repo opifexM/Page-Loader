@@ -1,4 +1,7 @@
 import axios from 'axios';
+import debug from 'debug';
+
+const log = debug('page-loader:api');
 
 /**
  * @param {string} url
@@ -9,7 +12,7 @@ export function loadTextUrl(url) {
     .get(url)
     .then((response) => String(response.data))
     .catch((error) => {
-      console.error(`Url '${url}' html download error: '${error}'`);
+      log(`Error downloading HTML from url '${url}': ${error}`);
     });
 }
 
@@ -26,6 +29,6 @@ export function loadBlobUrl(url) {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.error(`Url '${url}' blob download error: '${error}'`);
+      log(`Error downloading Blob from url '${url}': ${error}`);
     });
 }
