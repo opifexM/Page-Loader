@@ -8,14 +8,15 @@ import {
   jest,
   test,
 } from '@jest/globals';
+import { existsSync } from 'fs';
 import fs from 'fs/promises';
+import nock from 'nock';
 import os from 'os';
 import path from 'path';
-import { existsSync } from 'fs';
-import nock from 'nock';
-import { loadHtmlUrl } from '../src/api.js';
+import { loadTextUrl } from '../src/api.js';
 import loadWebSite from '../src/app.js';
 import { saveTextFile } from '../src/file.js';
+import { fileURLToPath } from 'url';
 
 describe('PageLoader functionality', () => {
   let tempDir;
@@ -35,23 +36,49 @@ describe('PageLoader functionality', () => {
   });
 
   afterEach(async () => {
-    await fs.rm(tempDir, { recursive: true, force: true });
+    await fs.rm(tempDir, {recursive: true, force: true});
   });
 
   test('successfully downloads and saves', async () => {
+    const fixturesPath = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '..',
+      '__fixtures__'
+    );
     const url = 'https://example.com';
-    const content = '<html lang="en"><body>Example page</body></html>';
-    const contentUpdated = '<html lang="en"><head></head><body>Example page</body></html>';
+    const content = await fs.readFile(
+      path.join(fixturesPath, 'example.html'),
+      'utf8'
+    );
+    const expectedContent = await fs.readFile(
+      path.join(fixturesPath, 'example-com.html'),
+      'utf8'
+    );
+    const cssContent = await fs.readFile(
+      path.join(fixturesPath, 'application.css'),
+      'utf8'
+    );
+    const htmlContent = await fs.readFile(
+      path.join(fixturesPath, 'courses.html'),
+      'utf8'
+    );
+    const pngContent = await fs.readFile(path.join(fixturesPath, 'nodejs.png'));
 
     nock('https://example.com').get('/').reply(200, content);
+    nock('https://example.com')
+      .get('/assets/application.css')
+      .reply(200, cssContent);
+    nock('https://example.com').get('/courses').reply(200, htmlContent);
+    nock('https://example.com')
+      .get('/assets/professions/nodejs.png')
+      .reply(200, pngContent);
 
     await loadWebSite(url, tempDir);
 
     const filePath = path.join(tempDir, 'example-com.html');
-    console.log(filePath);
     const fileContent = await fs.readFile(filePath, 'utf8');
 
-    expect(fileContent).toBe(contentUpdated);
+    expect(fileContent).toBe(expectedContent);
   });
 
   test('loadUrl throws an error on HTTP error', async () => {
@@ -62,7 +89,7 @@ describe('PageLoader functionality', () => {
       .spyOn(console, 'error')
       .mockImplementation(() => {});
 
-    await expect(loadHtmlUrl(url)).rejects.toThrow();
+    await expect(loadTextUrl(url)).rejects.toThrow();
     expect(consoleSpy).toHaveBeenCalled();
 
     consoleSpy.mockRestore();

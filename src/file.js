@@ -27,7 +27,7 @@ function isFileWritable(filePath) {
  * @return {void}
  */
 export function saveTextFile(filePath, content) {
-  if (isFileWritable(filePath)) {
+  if (content && isFileWritable(filePath)) {
     try {
       fs.writeFileSync(filePath, content, 'utf8');
     } catch (error) {
@@ -43,7 +43,7 @@ export function saveTextFile(filePath, content) {
  * @return {void}
  */
 export function saveBlobFile(filePath, blob) {
-  if (isFileWritable(filePath)) {
+  if (blob && isFileWritable(filePath)) {
     try {
       const buffer = Buffer.from(blob);
       fs.writeFileSync(filePath, buffer);
