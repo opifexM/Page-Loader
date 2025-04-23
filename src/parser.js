@@ -86,7 +86,7 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         `Processing <${tag}> resource. Original URL: '${loadUrl}', New path: '${newSrcPath}'.`
       );
 
-      return;
+      // return;
       tasks.add({
         title: loadUrl,
         task: () => {
@@ -146,9 +146,9 @@ function normalizeResourceUrl(url) {
  */
 function extractFileNameWithoutExtension(filePath) {
   const parsed = path.parse(filePath);
-  console.log('== parsed');
-  console.log(path.join(parsed.dir, parsed.name));
-  console.log('===');
+  // console.log('== parsed');
+  // console.log(path.join(parsed.dir, parsed.name));
+  // console.log('===');
   return path.join(parsed.dir, parsed.name);
 }
 
