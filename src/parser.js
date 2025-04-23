@@ -29,6 +29,7 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
 
   const tasks = new Listr([], {
     concurrent: false,
+    exitOnError: true,
     rendererOptions: { collapse: false },
   });
   const $ = cheerio.load(htmlCode);
