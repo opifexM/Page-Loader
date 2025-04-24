@@ -16,7 +16,7 @@ import {
   test,
 } from '@jest/globals';
 
-import { loadTextUrl } from '../src/api.js';
+import { loadBlobUrl, loadTextUrl } from '../src/api.js';
 import loadWebSite from '../src/app.js';
 import { saveTextFile } from '../src/file.js';
 
@@ -116,6 +116,21 @@ describe('PageLoader functionality', () => {
 
     expect(consoleSpy).toHaveBeenCalled();
     expect(existsSync(filePath)).toBe(false);
+
+    consoleSpy.mockRestore();
+  });
+
+  test('loadBlobUrl handles error on HTTP error', async () => {
+    const url = 'https://example.com/blob-error';
+
+    nock('https://example.com').get('/blob-error').reply(500);
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
+
+    await expect(loadBlobUrl(url)).rejects.toThrow();
+    expect(consoleSpy).toHaveBeenCalled();
 
     consoleSpy.mockRestore();
   });
