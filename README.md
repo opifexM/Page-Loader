@@ -50,4 +50,4 @@ Example:
 
 ## License
 
-FileComparison is licensed under the ISC license.
+PageLoader is licensed under the ISC license.
