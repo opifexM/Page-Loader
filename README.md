@@ -1,3 +1,4 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opifexM_Page-Loader&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=opifexM_Page-Loader)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=opifexM_Page-Loader&metric=bugs)](https://sonarcloud.io/summary/new_code?id=opifexM_Page-Loader)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=opifexM_Page-Loader&metric=coverage)](https://sonarcloud.io/summary/new_code?id=opifexM_Page-Loader)
 [![Actions Status](https://github.com/opifexM/fullstack-javascript-project-4/workflows/hexlet-check/badge.svg)](https://github.com/opifexM/fullstack-javascript-project-4/actions)
