@@ -29,14 +29,6 @@ jobs:
       - name: Run tests with coverage
         run: npm test -- --coverage --coverageReporters=lcov
 
-      - name: Debug list coverage files
-        run: |
-          echo "Coverage folder structure:"
-          ls -R coverage
-          echo "---"
-          echo "First 30 строк lcov.info:"
-          head -n 30 coverage/lcov.info
-
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v5
         env:
