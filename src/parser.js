@@ -21,6 +21,14 @@ function extractFileNameWithoutExtension(filePath) {
  * @param {string} url
  * @return {string}
  */
+export function normalizeUrl(url) {
+  return url.replace(/^https?:\/+/, '').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '-');
+}
+
+/**
+ * @param {string} url
+ * @return {string}
+ */
 function normalizeResourceUrl(url) {
   const fileNameWithoutExt = extractFileNameWithoutExtension(url);
   const normalizedName = normalizeUrl(fileNameWithoutExt);
@@ -32,21 +40,13 @@ function normalizeResourceUrl(url) {
 }
 
 /**
- * @param {string} url
- * @return {string}
- */
-export function normalizeUrl(url) {
-  return url.replace(/^https?:\/+/, '').replace(/[^a-zA-Zа-яА-ЯёЁ0-9]/g, '-');
-}
-
-/**
  * @param {string} str
  * @return {boolean}
  */
 function isAbsoluteUrl(str) {
   try {
-    new URL(str);
-    return true;
+    const url = new URL(str);
+    return Boolean(url.href);
   } catch (e) {
     return false;
   }
