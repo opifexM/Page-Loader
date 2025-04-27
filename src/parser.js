@@ -66,8 +66,8 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
   const resourceFilePath = `${normalizedHost}${normalizedPath}${FILE_IDENTIFIER}`;
   const fullResourcePath = `${workPath}/${resourceFilePath}`;
 
-  createDirectory(fullResourcePath);
-  log(`Resource directory ensured at '${fullResourcePath}'.`);
+  // createDirectory(fullResourcePath).then(() {
+  //     log(`Resource directory ensured at '${fullResourcePath}'.`);
 
   const tasks = new Listr([], {
     concurrent: false,

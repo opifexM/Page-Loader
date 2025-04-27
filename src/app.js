@@ -2,11 +2,13 @@ import axios from 'axios';
 import axiosDebugLog from 'axios-debug-log';
 import debug from 'debug';
 import { loadTextUrl } from './api.js';
-import { checkWorkDirectory, saveFile } from './file-utils.js';
+import {checkWorkDirectory, createDirectory, saveFile} from './file-utils.js';
 import { normalizeUrl, parseHtml } from './parser.js';
 
 axiosDebugLog(axios);
 const log = debug('page-loader');
+
+const FILE_IDENTIFIER = '_files';
 
 /**
  * @param {string} inputUrl
@@ -18,8 +20,15 @@ export default function loadWebSite(inputUrl, inputPath) {
   const websiteUrl = new URL(inputUrl);
   const normalizedHost = normalizeUrl(websiteUrl.hostname);
   const normalizedPath = websiteUrl.pathname === '/' ? '' : normalizeUrl(websiteUrl.pathname);
+  const resourceFilePath = `${normalizedHost}${normalizedPath}${FILE_IDENTIFIER}`;
+  const fullResourcePath = `${workPath}/${resourceFilePath}`;
+
 
   return checkWorkDirectory(workPath)
+    .then(() => {
+      log(`Resource directory ensured at '${fullResourcePath}'.`);
+      return createDirectory(fullResourcePath);
+    })
     .then(() => {
       log(`Loading URL: '${websiteUrl}'...`);
       return loadTextUrl(websiteUrl.toString());
