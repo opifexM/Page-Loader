@@ -38,9 +38,6 @@ export default function loadWebSite(inputUrl, inputPath) {
         `${workPath}/${normalizedHost}${normalizedPath}.html`,
         updatedHtmlContent,
       );
-      console.log(
-        `Page was successfully downloaded into '${workPath}/${normalizedHost}${normalizedPath}.html'`,
-      );
 
       return updatedHtmlContent;
     })

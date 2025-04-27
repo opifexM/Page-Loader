@@ -15,6 +15,12 @@ program
     'output dir (for example: "/home/user/current-dir")',
   )
   .arguments('<url>')
-  .action((url, options) => loadWebSite(url, options.output));
+  .action((url, options) => {
+      loadWebSite(url, options.output);
+      console.log(
+         `Page '${url}' was successfully downloaded.'`,
+      );
+    }
+  );
 
 program.parse();
