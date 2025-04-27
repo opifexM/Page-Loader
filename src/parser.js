@@ -3,7 +3,7 @@ import debug from 'debug';
 import { Listr } from 'listr2';
 import path from 'path';
 import { loadBlobUrl, loadTextUrl } from './api.js';
-import { createDirectory, saveBlobFile, saveTextFile } from './file.js';
+import { createDirectory, saveFile } from './file-utils.js';
 
 const log = debug('page-loader:parser');
 const FILE_IDENTIFIER = '_files';
@@ -117,24 +117,23 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
             $(element).attr('href', newSrcPath);
             return loadTextUrl(loadUrl).then((textData) => {
               log(`Downloaded text resource from '${loadUrl}'.`);
-              saveTextFile(finalWorkPath, textData);
+              return saveFile(finalWorkPath, textData);
             });
           }
           if (tag === 'script') {
             $(element).attr('src', newSrcPath);
             return loadTextUrl(loadUrl).then((textData) => {
               log(`Downloaded script resource from '${loadUrl}'.`);
-              saveTextFile(finalWorkPath, textData);
+              return saveFile(finalWorkPath, textData);
             });
           }
           if (tag === 'img') {
             $(element).attr('src', newSrcPath);
             return loadBlobUrl(loadUrl).then((blobData) => {
               log(`Downloaded image resource from '${loadUrl}'.`);
-              saveBlobFile(finalWorkPath, blobData);
+              return saveFile(finalWorkPath, blobData);
             });
           }
-          return Promise.resolve();
         },
       });
     },

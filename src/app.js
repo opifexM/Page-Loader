@@ -2,7 +2,7 @@ import axios from 'axios';
 import axiosDebugLog from 'axios-debug-log';
 import debug from 'debug';
 import { loadTextUrl } from './api.js';
-import { checkDirectory, saveTextFile } from './file.js';
+import { checkWorkDirectory, saveFile } from './file-utils.js';
 import { normalizeUrl, parseHtml } from './parser.js';
 
 axiosDebugLog(axios);
@@ -18,10 +18,7 @@ export default function loadWebSite(inputUrl, inputPath) {
   const normalizedHost = normalizeUrl(websiteUrl.hostname);
   const normalizedPath = websiteUrl.pathname === '/' ? '' : normalizeUrl(websiteUrl.pathname);
 
-  return Promise.resolve()
-    .then(() => {
-      checkDirectory(workPath);
-    })
+  return checkWorkDirectory(workPath)
     .then(() => {
       log(`Loading URL: '${websiteUrl}'...`);
       return loadTextUrl(websiteUrl.toString());
@@ -34,15 +31,15 @@ export default function loadWebSite(inputUrl, inputPath) {
       log(
         `Saving file: '${workPath}/${normalizedHost}${normalizedPath}.html'...`,
       );
-      saveTextFile(
+      return saveFile(
         `${workPath}/${normalizedHost}${normalizedPath}.html`,
         updatedHtmlContent,
       );
-
-      return updatedHtmlContent;
     })
     .catch((error) => {
-      log(`Error during program execution: ${error}`);
+      console.error(
+        `Error during program execution : ${error}`,
+      );
       throw error;
     });
 }
