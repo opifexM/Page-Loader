@@ -11,6 +11,7 @@ const log = debug('page-loader');
 /**
  * @param {string} inputUrl
  * @param {string} inputPath
+ * @return {Promise<void>}
  */
 export default function loadWebSite(inputUrl, inputPath) {
   const workPath = inputPath ?? process.cwd();

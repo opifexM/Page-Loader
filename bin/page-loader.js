@@ -16,10 +16,15 @@ program
   )
   .arguments('<url>')
   .action((url, options) => {
-      loadWebSite(url, options.output);
-      console.log(
-         `Page '${url}' was successfully downloaded.'`,
-      );
+      return loadWebSite(url, options.output)
+        .then(() => {
+          console.log(
+             `Page '${url}' was successfully downloaded.'`,
+          );
+        })
+        .catch(() => {
+          process.exit(1);
+        })
     }
   );
 
