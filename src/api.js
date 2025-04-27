@@ -40,11 +40,7 @@ export function loadTextUrl(url) {
  */
 export function loadBlobUrl(url) {
   return axios
-    .request({
-      method: 'GET',
-      url,
-      responseType: 'arraybuffer',
-    })
+    .get(url, { responseType: 'arraybuffer' })
     .then((response) => {
       if (response.status !== 200) {
         console.error(
