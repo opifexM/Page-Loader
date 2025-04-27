@@ -47,9 +47,9 @@ export function saveFile(filePath, content) {
 
   let data = content;
   //todo-test
-  if (isString && ext === '.css' && !content.startsWith('\uFEFF')) {
-    data = '\uFEFF' + content;
-  }
+  // if (isString && ext === '.css' && !content.startsWith('\uFEFF')) {
+  //   data = '\uFEFF' + content;
+  // }
 
   return fs
     .writeFile(filePath, data, isString ? 'utf8' : undefined)
