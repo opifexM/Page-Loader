@@ -48,7 +48,7 @@ function isAbsoluteUrl(str) {
     const url = new URL(str)
     return Boolean(url.href)
   }
-  catch (e) {
+  catch (_) {
     return false
   }
 }
@@ -65,7 +65,6 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
   const normalizedHost = normalizeUrl(websiteHost)
   const normalizedPath = websiteUrl.pathname === '/' ? '' : normalizeUrl(websiteUrl.pathname)
   const resourceFilePath = `${normalizedHost}${normalizedPath}${FILE_IDENTIFIER}`
-  const fullResourcePath = `${workPath}/${resourceFilePath}`
 
   const tasks = new Listr([], {
     concurrent: false,
