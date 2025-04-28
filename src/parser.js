@@ -116,7 +116,7 @@ export function updateResourceLinks(resourcesData, baseUrl) {
   const normalizedPath = baseUrl.pathname === '/' ? '' : normalizeUrl(baseUrl.pathname);
   const resourceFilePath = `${normalizedHost}${normalizedPath}${FILE_IDENTIFIER}`;
 
-  resources.forEach((resource) => {
+  const updatedResources = resources.reduce((acc, resource) => {
     const { node, tagName, originalUrl } = resource;
     let absolute;
     let localPath;
@@ -131,15 +131,25 @@ export function updateResourceLinks(resourcesData, baseUrl) {
     }
     if (absolute && absolute.hostname !== host) {
       log(`Skipping element with external hostname: '${absolute.hostname}'.`);
-      return;
+      return acc;
     }
 
     dom(node).attr(HTML_ATTRIBUTES[tagName], localPath);
-    resource.localPath = localPath;
     log(`Rewrite resource <${tagName}>. Path: '${absolute}', New path: '${localPath}'.`);
-  });
+    acc.push({
+      node: node,
+      tagName: tagName,
+      originalUrl: originalUrl,
+      localPath: localPath,
+    });
 
-  return resourcesData;
+    return acc;
+  }, []);
+
+  return {
+    dom: dom,
+    resources: updatedResources,
+  };
 }
 
 /**
@@ -168,6 +178,8 @@ export function downloadAndSaveResources(resourcesData, baseUrl, outputDir) {
 
     const filePath = `${outputDir}/${localPath}`;
     log(`New task for download resource URL: '${loadUrl}'`);
+    console.log(`originalUrl: ${originalUrl}, localPath: ${localPath}`);
+    console.log(`New task for download resource URL: '${loadUrl}'`);
 
     tasks.add({
       title: loadUrl,
