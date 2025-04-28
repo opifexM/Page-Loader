@@ -1,5 +1,4 @@
 import fs from 'fs/promises';
-import * as path from 'node:path';
 import debug from 'debug';
 
 const log = debug('page-loader:file');
@@ -42,17 +41,10 @@ export function createDirectory(directoryPath) {
  * @returns {Promise<void>}
  */
 export function saveFile(filePath, content) {
-  const ext = path.extname(filePath).toLowerCase();
   const isString = typeof content === 'string';
 
-  let data = content;
-  //todo-test
-  // if (isString && ext === '.css' && !content.startsWith('\uFEFF')) {
-  //   data = '\uFEFF' + content;
-  // }
-
   return fs
-    .writeFile(filePath, data, isString ? 'utf8' : undefined)
+    .writeFile(filePath, content, isString ? 'utf8' : undefined)
     .then(() => {
       log(`Successfully saved file at '${filePath}'.`);
     })
