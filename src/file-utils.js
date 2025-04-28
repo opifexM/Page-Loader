@@ -1,24 +1,24 @@
-import fs from 'fs/promises';
-import debug from 'debug';
+import fs from 'fs/promises'
+import debug from 'debug'
 
-const log = debug('page-loader:file');
+const log = debug('page-loader:file')
 
 /**
  * @param {string} directoryPath
  * @return {Promise<void>}
  */
 export function checkWorkDirectory(directoryPath) {
-  log(`Check directory: '${directoryPath}'...`);
+  log(`Check directory: '${directoryPath}'...`)
   return fs
     .access(directoryPath)
     .then(() => {})
     .catch(() => {
       const error = new Error(
-        `ENOENT: no such file or directory, access '${directoryPath}'`
-      );
-      error.code = 'ENOENT';
-      throw error;
-    });
+        `ENOENT: no such file or directory, access '${directoryPath}'`,
+      )
+      error.code = 'ENOENT'
+      throw error
+    })
 }
 
 /**
@@ -30,9 +30,9 @@ export function createDirectory(directoryPath) {
     .catch((error) => {
       console.error(
         `Error creating directory '${directoryPath}' : ${error}`,
-      );
-      throw error;
-    });
+      )
+      throw error
+    })
 }
 
 /**
@@ -41,17 +41,17 @@ export function createDirectory(directoryPath) {
  * @returns {Promise<void>}
  */
 export function saveFile(filePath, content) {
-  const isString = typeof content === 'string';
+  const isString = typeof content === 'string'
 
   return fs
     .writeFile(filePath, content, isString ? 'utf8' : undefined)
     .then(() => {
-      log(`Successfully saved file at '${filePath}'.`);
+      log(`Successfully saved file at '${filePath}'.`)
     })
     .catch((error) => {
       console.error(
         `Error saving file '${filePath}' : ${error}`,
-      );
-      throw error;
-    });
+      )
+      throw error
+    })
 }

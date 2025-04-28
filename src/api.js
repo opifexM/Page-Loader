@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from 'axios'
 
 /**
  * @param {string} url
@@ -11,27 +11,29 @@ export function loadTextUrl(url) {
       if (response.status !== 200) {
         console.error(
           `Error: Resource '${url}' returned status ${response.status}`,
-        );
-        throw new Error(`HTTP ${response.status} for ${url}`);
+        )
+        throw new Error(`HTTP ${response.status} for ${url}`)
       }
-      return String(response.data);
+      return String(response.data)
     })
     .catch((error) => {
       if (error.response) {
         console.error(
           `Error downloading HTML from url '${url}': HTTP ${error.response.status}`,
-        );
-      } else if (error.request) {
+        )
+      }
+      else if (error.request) {
         console.error(
           `Error downloading HTML from url '${url}': No response received`,
-        );
-      } else {
+        )
+      }
+      else {
         console.error(
           `Error downloading HTML from url '${url}': ${error.message}`,
-        );
+        )
       }
-      throw error;
-    });
+      throw error
+    })
 }
 
 /**
@@ -45,25 +47,27 @@ export function loadBlobUrl(url) {
       if (response.status !== 200) {
         console.error(
           `Error: Resource '${url}' returned status ${response.status}`,
-        );
-        throw new Error(`HTTP ${response.status} for ${url}`);
+        )
+        throw new Error(`HTTP ${response.status} for ${url}`)
       }
-      return response.data;
+      return response.data
     })
     .catch((error) => {
       if (error.response) {
         console.error(
           `Error downloading Blob from url '${url}': HTTP ${error.response.status}`,
-        );
-      } else if (error.request) {
+        )
+      }
+      else if (error.request) {
         console.error(
           `Error downloading Blob from url '${url}': No response received`,
-        );
-      } else {
+        )
+      }
+      else {
         console.error(
           `Error downloading Blob from url '${url}': ${error.message}`,
-        );
+        )
       }
-      throw error;
-    });
+      throw error
+    })
 }
