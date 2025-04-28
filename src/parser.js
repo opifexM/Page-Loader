@@ -115,14 +115,14 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         task: () => {
           if (tag === 'link') {
             $(element).attr('href', newSrcPath);
-            return loadTextUrl(loadUrl).then((textData) => {
+            return loadBlobUrl(loadUrl).then((textData) => {
               log(`Downloaded text resource from '${loadUrl}'.`);
               return saveFile(finalWorkPath, textData);
             });
           }
           if (tag === 'script') {
             $(element).attr('src', newSrcPath);
-            return loadTextUrl(loadUrl).then((textData) => {
+            return loadBlobUrl(loadUrl).then((textData) => {
               log(`Downloaded script resource from '${loadUrl}'.`);
               return saveFile(finalWorkPath, textData);
             });
