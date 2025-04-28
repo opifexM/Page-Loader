@@ -17,6 +17,12 @@ function extractFileNameWithoutExtension(filePath) {
   return path.join(parsed.dir, parsed.name)
 }
 
+const HTML_ATTRIBUTES = {
+  link: 'href',
+  script: 'src',
+  img: 'src',
+}
+
 /**
  * @param {string} url
  * @return {string}
@@ -74,21 +80,12 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
   const $ = cheerio.load(htmlCode)
   $('img[src$=".png"], img[src$=".jpg"], script[src], link[href]').each(
     (i, element) => {
-      let srcPath = null
       let srcPathUrl = null
       let loadUrl = null
       let newSrcPath = null
 
       const tag = element.tagName.toLowerCase()
-      if (tag === 'link') {
-        srcPath = $(element).attr('href')
-      }
-      else if (tag === 'script') {
-        srcPath = $(element).attr('src')
-      }
-      else if (tag === 'img') {
-        srcPath = $(element).attr('src')
-      }
+      const srcPath = $(element).attr(HTML_ATTRIBUTES[tag])
 
       if (!srcPath) {
         log('Skipping element as no source path found.')
@@ -113,15 +110,8 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
       tasks.add({
         title: loadUrl,
         task: () => {
-          if (tag === 'link') {
-            $(element).attr('href', newSrcPath)
-          }
-          if (tag === 'script') {
-            $(element).attr('src', newSrcPath)
-          }
-          if (tag === 'img') {
-            $(element).attr('src', newSrcPath)
-          }
+          $(element).attr(HTML_ATTRIBUTES[tag], newSrcPath)
+
           return loadBlobUrl(loadUrl).then((textData) => {
             log(`Downloaded resource from '${loadUrl}'.`)
             return saveFile(finalWorkPath, textData)
