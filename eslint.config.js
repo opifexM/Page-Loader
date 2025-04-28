@@ -13,4 +13,9 @@ export default defineConfig([
       globals: pluginJest.environments.globals.globals,
     },
   },
+  {
+    rules: {
+      '@stylistic/semi': 'off',
+    },
+  },
 ])
