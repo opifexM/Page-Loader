@@ -48,7 +48,7 @@ function isAbsoluteUrl(str) {
     const url = new URL(str)
     return Boolean(url.href)
   }
-  catch (_) {
+  catch {
     return false
   }
 }
