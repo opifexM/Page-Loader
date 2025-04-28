@@ -115,25 +115,29 @@ export function parseHtml(htmlCode, websiteUrl, workPath) {
         task: () => {
           if (tag === 'link') {
             $(element).attr('href', newSrcPath);
-            return loadBlobUrl(loadUrl).then((textData) => {
-              log(`Downloaded text resource from '${loadUrl}'.`);
-              return saveFile(finalWorkPath, textData);
-            });
+            // return loadBlobUrl(loadUrl).then((textData) => {
+            //   log(`Downloaded text resource from '${loadUrl}'.`);
+            //   return saveFile(finalWorkPath, textData);
+            // });
           }
           if (tag === 'script') {
             $(element).attr('src', newSrcPath);
-            return loadBlobUrl(loadUrl).then((textData) => {
-              log(`Downloaded script resource from '${loadUrl}'.`);
-              return saveFile(finalWorkPath, textData);
-            });
+            // return loadBlobUrl(loadUrl).then((textData) => {
+            //   log(`Downloaded script resource from '${loadUrl}'.`);
+            //   return saveFile(finalWorkPath, textData);
+            // });
           }
           if (tag === 'img') {
             $(element).attr('src', newSrcPath);
-            return loadBlobUrl(loadUrl).then((blobData) => {
-              log(`Downloaded image resource from '${loadUrl}'.`);
-              return saveFile(finalWorkPath, blobData);
-            });
+            // return loadBlobUrl(loadUrl).then((blobData) => {
+            //   log(`Downloaded image resource from '${loadUrl}'.`);
+            //   return saveFile(finalWorkPath, blobData);
+            // });
           }
+          return loadBlobUrl(loadUrl).then((textData) => {
+            log(`Downloaded resource from '${loadUrl}'.`);
+            return saveFile(finalWorkPath, textData);
+          });
         },
       });
     },
