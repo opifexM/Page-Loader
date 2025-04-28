@@ -13,9 +13,7 @@ export function checkWorkDirectory(directoryPath) {
     .access(directoryPath)
     .then(() => {})
     .catch(() => {
-      const error = new Error(
-        `ENOENT: no such file or directory, access '${directoryPath}'`,
-      );
+      const error = new Error(`ENOENT: no such file or directory, access '${directoryPath}'`);
       error.code = 'ENOENT';
       throw error;
     });
@@ -28,9 +26,7 @@ export function checkWorkDirectory(directoryPath) {
 export function createDirectory(directoryPath) {
   return fs.mkdir(directoryPath, { recursive: true })
     .catch((error) => {
-      console.error(
-        `Error creating directory '${directoryPath}' : ${error}`,
-      );
+      console.error(`Error creating directory '${directoryPath}' : ${error}`);
       throw error;
     });
 }
@@ -49,9 +45,7 @@ export function saveFile(filePath, content) {
       log(`Successfully saved file at '${filePath}'.`);
     })
     .catch((error) => {
-      console.error(
-        `Error saving file '${filePath}' : ${error}`,
-      );
+      console.error(`Error saving file '${filePath}' : ${error}`);
       throw error;
     });
 }

@@ -3,7 +3,7 @@ import axiosDebugLog from 'axios-debug-log';
 import debug from 'debug';
 import { loadTextUrl } from './api.js';
 import { checkWorkDirectory, createDirectory, saveFile } from './file-utils.js';
-import { normalizeUrl, parseHtml } from './parser.js';
+import { downloadAndSaveResources, parseHtmlResources, normalizeUrl, updateResourceLinks } from './parser.js';
 
 axiosDebugLog(axios);
 const log = debug('page-loader');
@@ -32,18 +32,21 @@ export default function loadWebSite(inputUrl, inputPath) {
       log(`Loading URL: '${websiteUrl}'...`);
       return loadTextUrl(websiteUrl.toString());
     })
-    .then((textData) => {
-      log(`Parsing URL: '${websiteUrl}'...`);
-      return parseHtml(textData, websiteUrl, workPath);
+    .then((html) => {
+      log(`Extract html resources from URL: '${websiteUrl}'...`);
+      return parseHtmlResources(html);
     })
-    .then((updatedHtmlContent) => {
-      log(
-        `Saving file: '${workPath}/${normalizedHost}${normalizedPath}.html'...`,
-      );
-      return saveFile(
-        `${workPath}/${normalizedHost}${normalizedPath}.html`,
-        updatedHtmlContent,
-      );
+    .then((resourcesData) => {
+      log(`Rewrite html resources for URL: '${websiteUrl}'...`);
+      return updateResourceLinks(resourcesData, websiteUrl);
+    })
+    .then((resourcesData) => {
+      log('Download extracted resources...');
+      return downloadAndSaveResources(resourcesData, websiteUrl, workPath);
+    })
+    .then((updatedHtml) => {
+      log(`Saving URL file: '${workPath}/${normalizedHost}${normalizedPath}.html'...`);
+      return saveFile(`${workPath}/${normalizedHost}${normalizedPath}.html`, updatedHtml);
     })
     .catch((error) => {
       console.error(

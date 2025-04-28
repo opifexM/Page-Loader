@@ -18,14 +18,11 @@ program
   .action((url, options) => {
     return loadWebSite(url, options.output)
       .then(() => {
-        console.log(
-          `Page '${url}' was successfully downloaded.'`,
-        );
+        console.log(`Page '${url}' was successfully downloaded.'`);
       })
       .catch(() => {
         process.exit(1);
       })
-  },
-  );
+  });
 
 program.parseAsync();
