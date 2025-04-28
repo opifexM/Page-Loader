@@ -31,10 +31,10 @@ describe('PageLoader functionality', () => {
       '__fixtures__',
     );
     [html, expectedHtml, css, courses, png] = await Promise.all([
-      fs.readFile(path.join(fixturesDir, 'example.html')),
-      fs.readFile(path.join(fixturesDir, 'example-com.html')),
-      fs.readFile(path.join(fixturesDir, 'application.css')),
-      fs.readFile(path.join(fixturesDir, 'courses.html')),
+      fs.readFile(path.join(fixturesDir, 'example.html'), 'utf8'),
+      fs.readFile(path.join(fixturesDir, 'example-com.html'), 'utf8'),
+      fs.readFile(path.join(fixturesDir, 'application.css'), 'utf8'),
+      fs.readFile(path.join(fixturesDir, 'courses.html'), 'utf8'),
       fs.readFile(path.join(fixturesDir, 'nodejs.png')),
     ]);
 

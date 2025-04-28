@@ -5,9 +5,9 @@ const log = debug('page-loader:file');
 
 /**
  * @param {string} directoryPath
- * @return {Promise<void>}
+ * @returns {Promise<void>}
  */
-export function checkWorkDirectory(directoryPath) {
+export function verifyDirectory(directoryPath) {
   log(`Check directory: '${directoryPath}'...`);
   return fs
     .access(directoryPath)
@@ -21,7 +21,7 @@ export function checkWorkDirectory(directoryPath) {
 
 /**
  * @param {string} directoryPath
- * @returns {Promise<string>}
+ * @returns {Promise<string|undefined>}
  * */
 export function createDirectory(directoryPath) {
   return fs.mkdir(directoryPath, { recursive: true })

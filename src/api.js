@@ -2,9 +2,9 @@ import axios from 'axios'
 
 /**
  * @param {string} url
- * @return {Promise<string>}
+ * @returns {Promise<string>}
  */
-export function loadTextUrl(url) {
+export function loadHtml(url) {
   return axios
     .get(url)
     .then((response) => {
@@ -30,9 +30,9 @@ export function loadTextUrl(url) {
 
 /**
  * @param {string} url
- * @return {Promise<Blob>}
+ * @returns {Promise<Blob>}
  */
-export function loadBlobUrl(url) {
+export function loadBinary(url) {
   return axios
     .get(url, { responseType: 'arraybuffer' })
     .then((response) => {
