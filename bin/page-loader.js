@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-import { Command } from 'commander';
-import loadWebSite from '../src/app.js';
+import { Command } from 'commander'
+import loadWebSite from '../src/app.js'
 
-const program = new Command();
+const program = new Command()
 program
   .name('page-loader')
   .description(
@@ -18,11 +18,11 @@ program
   .action((url, options) => {
     return loadWebSite(url, options.output)
       .then(() => {
-        console.log(`Page '${url}' was successfully downloaded.'`);
+        console.log(`Page '${url}' was successfully downloaded.'`)
       })
       .catch(() => {
-        process.exit(1);
+        process.exit(1)
       })
-  });
+  })
 
-program.parseAsync();
+program.parseAsync()
