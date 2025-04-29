@@ -4,9 +4,6 @@
 [![Actions Status](https://github.com/opifexM/fullstack-javascript-project-4/workflows/hexlet-check/badge.svg)](https://github.com/opifexM/fullstack-javascript-project-4/actions)
 [![Node CI](https://github.com/opifexM/Page-Loader/actions/workflows/nodejs.yml/badge.svg)](https://github.com/opifexM/Page-Loader/actions/workflows/nodejs.yml)
 
-**asciinema**
-https://asciinema.org/a/OKj56dFxTJG3cmf6UQgc0aOMd
-
 # PageLoader
 
 **PageLoader** is a command-line utility that downloads web pages from the internet and saves them locally, along with all external resources such as images, stylesheets, and JavaScript files. This allows users to view the pages offline, similar to how browsers save pages for offline use.
